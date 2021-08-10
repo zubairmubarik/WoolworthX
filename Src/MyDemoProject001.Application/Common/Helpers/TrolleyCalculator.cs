@@ -35,7 +35,6 @@ namespace MyDemoProject001.Application.Common.Helpers
                 #region Buy from Special
 
                 Hashtable hashtableForSpecials = LoadHashtableForSpecials(products, specialBuys);
-                Hashtable hashtableForProductsPrice = LoadHashtableForBestPrice(products);
 
                 foreach (var product in products.Where(x => x.Quantity > 0))
                 {
@@ -48,18 +47,16 @@ namespace MyDemoProject001.Application.Common.Helpers
                         if (special.quantities.Any(x => x.quantity == 0))
                             continue;
 
-                        var productSpecialQuantity = special.quantities.FirstOrDefault(x => x.name == product.Name);
-
-                        if (productSpecialQuantity == null)
-                            continue;
-
-
-                        var comparedPrice = Decimal.Compare(special.total, productSpecialQuantity.quantity * product.Price);
-                        if (comparedPrice <= 0)
+                        foreach (var spcQuantity in special.quantities)
                         {
-                            _total = _total + special.total;
-                            product.Quantity = product.Quantity - productSpecialQuantity.quantity;                            
-                        }                        
+
+                            var prod = products.FirstOrDefault(x => x.Name == spcQuantity.name);
+                            prod.Quantity = prod.Quantity - spcQuantity.quantity;
+
+                        }
+
+                        _total = _total + special.total;
+
                     }
                 }
 
@@ -78,15 +75,7 @@ namespace MyDemoProject001.Application.Common.Helpers
             return _total;
         }
 
-        private Hashtable LoadHashtableForBestPrice(List<ProductDto> products)
-        {
-            Hashtable hashtableForBestPrice = new Hashtable();
 
-            foreach (var product in products)
-                hashtableForBestPrice.Add(product.Name, product.Price * product.Quantity);
-
-            return hashtableForBestPrice;
-        }
         private Hashtable LoadHashtableForSpecials(List<ProductDto> products, List<Special> specialBuys)
         {
             Hashtable hashtableForSpecials = new Hashtable();

@@ -48,7 +48,7 @@ namespace MyDemoProject001.ApplicationUnitTests.Common.Helpers
                 }
             };
 
-            decimal expectedResult = 16; //14
+            decimal expectedResult = 14; 
 
             var gateway = GetITrolleyCalculator();
 
